@@ -1,0 +1,36 @@
+<style>
+    .navbar-expand .navbar-nav {
+        flex-direction: column !important;
+    }
+    @media (min-width: 992px) {
+    .navbar-expand .navbar-nav {
+        flex-direction: row !important;
+    }}
+</style>
+<header class="bg-light py-3">
+    <div class="container">
+        <div class="row align-items-center justify-content-between">
+            <div class="col-md-3">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <img src="/icon.png" alt="Логотип" class="img-fluid">
+                    </div>
+                    <div class="col">
+                        <span style="font-family: 'Pacifico', cursive; font-size: 32px;">BookBase</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <nav class="navbar navbar-expand navbar-light">
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav mx-auto flex-md-column flex-lg-row">
+                            <li class="nav-item"><a class="nav-link" href="/">Головна сторінка</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/add">Додати книгу</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/about">Інформація</a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
