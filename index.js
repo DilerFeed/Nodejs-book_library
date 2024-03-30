@@ -3,7 +3,9 @@ const { MongoClient, ObjectId } = require('mongodb');
 const app = express();
 const port = 3000;
 
-const url = ''; // URL для підключення до MongoDB
+app.set('view engine', 'ejs'); // Встановлюємо двигун шаблонізації EJS
+
+const url = 'mongodb+srv://glebishshenko1000:nk7jKfEXYxBMrRlB@bookstore.ooopmv0.mongodb.net/?retryWrites=true&w=majority&appName=bookstore'; // URL для підключення до MongoDB
 const dbName = 'bookstore'; // Назва бази даних
 const collectionName = 'books'; // Назва колекції
 
@@ -36,37 +38,8 @@ async function startServer() {
                 // Отримати останні 5 об'єктів та вивести їх у таблицю
                 const recentBooks = await collection.find().sort({ _id: -1 }).limit(5).toArray();
 
-                // Вивести сторінку з таблицею
-                res.send(`
-                    <html>
-                        <head>
-                            <title>Список книг</title>
-                            <link rel="stylesheet" type="text/css" href="/styles.css">
-                        </head>
-                        <body>
-                            <h1>Список книг</h1>
-                            <table>
-                                <tr>
-                                    <th>Назва</th>
-                                    <th>Автор</th>
-                                    <th>Жанр</th>
-                                    <th>Детально</th>
-                                    <th>Видалити</th>
-                                </tr>
-                                ${recentBooks.reverse().map((book, index) => `
-                                    <tr>
-                                        <td>${book.title}</td>
-                                        <td>${book.author}</td>
-                                        <td>${book.genre}</td>
-                                        <td><a class="button" href="/object/${index + 1}">Детально</a></td>
-                                        <td><a class="button" href="/delete/${index + 1}">Видалити</a></td>
-                                    </tr>
-                                `).join('')}
-                            </table>
-                            <a class="button" href="/add">Додати книгу</a>
-                        </body>
-                    </html>
-                `);
+                // Рендеринг сторінки з використанням шаблонів EJS
+                res.render('index', { pageTitle: 'Список книг', recentBooks });
             } catch (error) {
                 console.error('Помилка при отриманні об\'єктів з бази даних:', error);
                 res.status(500).send('Помилка сервера');
@@ -75,35 +48,7 @@ async function startServer() {
 
         // Головний маршрут для додавання нового об'єкту
         app.get('/add', (req, res) => {
-            res.send(`
-                <html>
-                    <head>
-                        <title>Додати нову книгу</title>
-                        <link rel="stylesheet" type="text/css" href="/styles.css">
-                    </head>
-                    <body>
-                        <h1>Додати нову книгу</h1>
-                        <form method="post" action="/add">
-                            <label for="title">Назва:</label>
-                            <input type="text" id="title" name="title" required><br>
-
-                            <label for="author">Автор:</label>
-                            <input type="text" id="author" name="author" required><br>
-
-                            <label for="genre">Жанр:</label>
-                            <input type="text" id="genre" name="genre" required><br>
-
-                            <label for="publisher">Видавництво:</label>
-                            <input type="text" id="publisher" name="publisher" required><br>
-
-                            <label for="pageCount">Кількість сторінок:</label>
-                            <input type="number" id="pageCount" name="pageCount" required><br>
-
-                            <button class="button" type="submit">Додати книгу</button>
-                        </form>
-                    </body>
-                </html>
-            `);
+            res.render('add', { pageTitle: 'Додати нову книгу' });
         });
 
         async function getNextNumericId() {
@@ -133,27 +78,11 @@ async function startServer() {
             try {
                 const numericId = parseInt(req.params.numericId);
                 const selectedBook = await collection.findOne({ numericId });
-        
+
                 if (selectedBook) {
-                    res.send(`
-                        <html>
-                            <head>
-                                <title>Детальна інформація про книгу</title>
-                                <link rel="stylesheet" type="text/css" href="/styles.css">
-                            </head>
-                            <body>
-                                <h1>Детальна інформація про книгу</h1>
-                                <p>Назва: ${selectedBook.title}</p>
-                                <p>Автор: ${selectedBook.author}</p>
-                                <p>Жанр: ${selectedBook.genre}</p>
-                                <p>Видавництво: ${selectedBook.publisher}</p>
-                                <p>Кількість сторінок: ${selectedBook.pageCount}</p>
-                                <a class="button" href="/">Повернутися на головну сторінку</a>
-                            </body>
-                        </html>
-                    `);
+                    res.render('details', { pageTitle: 'Детальна інформація про книгу', book: selectedBook });
                 } else {
-                    res.status(404).send('Об\'єкт не знайдено');
+                    res.status(404).render('404', { pageTitle: 'Помилка 404' }); // Рендеринг сторінки 404.ejs
                 }
             } catch (error) {
                 console.error('Помилка при отриманні об\'єкта з бази даних:', error);
@@ -170,12 +99,21 @@ async function startServer() {
                 if (deletedBook) {
                     res.redirect('/');
                 } else {
-                    res.status(404).send('Об\'єкт не знайдено');
+                    res.status(404).render('404', { pageTitle: 'Помилка 404' }); // Рендеринг сторінки 404.ejs
                 }
             } catch (error) {
                 console.error('Помилка при видаленні об\'єкта з бази даних:', error);
                 res.status(500).send('Помилка сервера');
             }
+        });
+
+        app.get('/about', (req, res) => {
+            res.render('about', { pageTitle: 'Про сайт' });
+        });        
+
+        // Middleware для обробки помилки 404
+        app.use((req, res, next) => {
+            res.status(404).render('404', { pageTitle: 'Помилка 404' }); // Рендеринг сторінки 404.ejs
         });
 
         app.listen(port, () => {

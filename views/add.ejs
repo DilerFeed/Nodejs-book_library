@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<%- include('head') %>
+<body>
+    <div class="wrapper">
+        <%- include('header') %>
+        <div class="container my-5">
+            <h1>Додати нову книгу</h1>
+            <form id="addBookForm" method="post" action="/add">
+                <div class="form-group">
+                    <label for="title">Назва:</label>
+                    <input type="text" class="form-control" id="title" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="author">Автор:</label>
+                    <input type="text" class="form-control" id="author" name="author" required>
+                </div>
+                <div class="form-group">
+                    <label for="genre">Жанр:</label>
+                    <input type="text" class="form-control" id="genre" name="genre" required>
+                </div>
+                <div class="form-group">
+                    <label for="publisher">Видавництво:</label>
+                    <input type="text" class="form-control" id="publisher" name="publisher" required>
+                </div>
+                <div class="form-group">
+                    <label for="pageCount">Кількість сторінок:</label>
+                    <input type="number" class="form-control" id="pageCount" name="pageCount" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Додати книгу</button>
+            </form>
+        </div>
+        <%- include('footer') %>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#addBookForm').submit(function(event) {
+                event.preventDefault(); // Перешкоджаємо відправці форми за замовчуванням
+
+                // Виконуємо валідацію форми
+                var form = $(this);
+                if (!form[0].checkValidity()) {
+                    form.addClass('was-validated');
+                    return;
+                }
+
+                // Надсилаємо POST-запит з введеними даними
+                $.ajax({
+                    type: 'POST',
+                    url: form.attr('action'),
+                    data: form.serialize(), // Серіалізуємо дані форми
+                    success: function(response) {
+                        // У разі успіху оновлюємо сторінку або виконуємо інші дії
+                        window.location.href = '/';
+                    },
+                    error: function(xhr, status, error) {
+                        // У разі помилки виводимо повідомлення про помилку
+                        console.error('Помилка:', error);
+                        alert('Сталася помилка. Будь ласка, спробуйте ще раз.');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

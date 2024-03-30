@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<%- include('head') %>
+<body>
+    <div class="wrapper">
+        <%- include('header') %>
+        <div class="container my-5">
+            <h1>Список книг</h1>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Назва</th>
+                            <th>Автор</th>
+                            <th>Жанр</th>
+                            <th>Детально</th>
+                            <th>Видалити</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% recentBooks.reverse().forEach((book, index) => { %>
+                            <tr>
+                                <td><%= book.title %></td>
+                                <td><%= book.author %></td>
+                                <td><%= book.genre %></td>
+                                <td><a class="btn btn-primary" href="/object/<%= index + 1 %>">Детально</a></td>
+                                <td><a class="btn btn-danger" href="/delete/<%= index + 1 %>">Видалити</a></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <%- include('footer') %>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
