@@ -5,7 +5,7 @@ const port = 3000;
 
 app.set('view engine', 'ejs'); // Встановлюємо двигун шаблонізації EJS
 
-const url = 'mongodb+srv://glebishshenko1000:nk7jKfEXYxBMrRlB@bookstore.ooopmv0.mongodb.net/?retryWrites=true&w=majority&appName=bookstore'; // URL для підключення до MongoDB
+const url = ''; // URL для підключення до MongoDB
 const dbName = 'bookstore'; // Назва бази даних
 const collectionName = 'books'; // Назва колекції
 
